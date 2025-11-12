@@ -1,0 +1,235 @@
+---
+title: "EXAM2"
+author: "Weglandsy"
+date: "2025-11-06"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Q1A
+
+```{r Q1, include=TRUE}
+popSize <- 100000
+df <- 2
+population <- rchisq(n = popSize, df = df)
+```
+
+Q1B
+
+```{r, include = TRUE}
+popSize <- 100000
+df <- 2
+population <- rchisq(n = popSize, df = df)
+sample5 <- 5
+sample50 <- 50
+
+means5 <- replicate(5000, {
+  sample_n5 <- sample(population, 5)
+  mean(sample_n5)
+})
+means50 <- replicate(5000, {
+  sample_n50 <- sample(population, 50)
+  mean(sample_n50)
+})
+```
+
+Q1C
+
+```{r Q1C, include = TRUE}
+
+set.seed(123)
+pop_mean <- mean(population) 
+pop_sd <- sd(population)
+
+par(mfrow = c(1,2))
+hist(means5, 
+     main = "Sampling Distribution for N = 5",
+     xlab = "Sample Mean",
+     freq = FALSE,
+     ylim = c(0,1)
+     )
+curve(dnorm(x, mean = pop_mean, sd = pop_sd/sqrt(5)),
+      col = "Orange",
+      lwd = 2,
+      add = TRUE
+      )
+hist(means50,
+  main = "Sampling Distribution for N = 50",
+  xlab = "Sample Mean",
+  freq = FALSE,
+  ylim = c(0, 1)
+)
+
+curve(dnorm(x, mean = pop_mean, sd = pop_sd / sqrt(50)),
+  col = "Orange",
+  lwd = 2,
+  add = TRUE
+)
+
+par(mfrow = c(1, 1))
+
+```
+
+Q1D
+
+```{r Q1D, include = TRUE}
+# The sampling distribution for n = 5 is skewed to the right like the original 
+#population, but the sampling distribution for n = 50 is more symmetric 
+#and bell shaped, which is closely approximating the blue normal curve.
+
+#This demonstrates the CLT - As the sample size of n increases, the sampling 
+#distribution of the sample mean approaches a normal distribution regardless
+#of the shape of the original population distribution.
+
+```
+
+Q2A
+
+```{r Q2A, include = TRUE}
+#H₀: The study session has no effect on the mean quiz score.
+#Hₐ: The study session improves the mean quiz score.
+
+
+```
+
+Q2B
+
+```{r Q2B, include = TRUE}
+before <- c(72, 68, 75, 70, 69, 71, 74, 73, 67, 70, 68, 72)
+after <- c(78, 74, 80, 75, 73, 76, 78, 79, 72, 74, 73, 76)
+t_result_paired <- t.test(after, before, paired = TRUE, alternative = "greater")
+print(t_result_paired)
+```
+
+Q2C
+
+```{r Q2C, include = TRUE}
+#The p-value is extremely small, much more smaller than the significance level 
+#of ⍺ = 0.05. Thus we can reject the null hypothesis and conclude that there is 
+#statistically significant evidence to believe that the study session 
+#effectively improves student scores.
+
+```
+
+Q3A
+
+```{r Q3A, include = TRUE}
+#H₀: p = 0.5
+#Hₐ: p ≠ 0.5
+
+```
+
+Q3B
+
+```{r Q3B, include =TRUE}
+prop_result <- prop.test(x = 58, n = 120, p = 0.5,
+                         alternative = "greater", 
+                         correct = FALSE)
+print(prop_result)
+
+
+```
+
+Q3C
+
+```{r Q3C, include = TRUE}
+#The p-value of 0.64 is greater than the significance level of ⍺ = 0.05, thus we can
+#fail to reject the null hypothesis. There isn't any statistical evidence
+#to conclude that more than half of the campus population supports the policy.
+
+```
+
+Q3D
+
+```{r Q3D, include = TRUE}
+prop_ci_result <- prop.test(x = 58, n = 120, correct = FALSE)
+print(prop_ci_result$conf.int)
+#The interval contains the null hypothesis of 0.5, this supports our previous 
+#conclusion because 0.5 is a valid value within the interval, so we cannot reject 
+#the NULL.
+
+```
+
+Q4A
+
+```{r Q4A, include = TRUE}
+candyCount <- c(Red = 52, Blue = 34, Green = 42, Yellow = 38, Orange = 34)
+print(candyCount)
+```
+
+Q4B
+
+```{r Q4B, include = TRUE}
+#H₀: The color proportions are equal,
+#Hₐ: At least one color proportion isnt 0.2
+```
+
+Q4C
+
+```{r Q4C, include = TRUE}
+GOF_result <- chisq.test(x = candyCount, 
+                         p = c(0.2, 0.2, 0.2, 0.2, 0.2))
+print(GOF_result)
+
+
+```
+
+Q4D
+
+```{r Q4D, include = TRUE}
+#The p-value of 0.2311 is greater than 0.05, thus we can fail to reject the
+#NULL hypothesis. There isn't any significant evidence to suggest that the candy
+#manufacturer's claims of equal color proportion is false.
+
+```
+
+Q5A
+
+```{r Q5A, include = TRUE}
+dessertData <- matrix(
+  c(28, 52, 18, 62, 34, 46),
+  nrow = 3,
+  byrow = TRUE,
+  dimname = list(
+    Time = c("Lunch", "Afternoon", "Dinner"),
+    Order = c("Dessert", "No Dessert")
+  )
+)
+dessertData
+
+
+```
+
+Q5B
+
+```{r Q5B, include = TRUE}
+#H₀: The time of day and dessert orders are independent and there isnt any association
+#Hₐ: Time of day and dessert order aren't independent.
+
+```
+
+Q5C
+
+```{r Q5C, include = TRUE}
+independent_result <- chisq.test(dessertData)
+print(independent_result)
+
+
+```
+
+Q5D
+
+```{r Q5D, include = TRUE}
+independent_result$expected
+
+```
+
+Q5E
+
+```{r Q5E, include = TRUE}
+#The p-value of 0.025 is less than the significance level of 0.05, thus
+#we can reject the null hypothesis and there isn't a statistically significant
+#association between the time of day and whether or not a customer orders desserts.
+
+```
